@@ -3,270 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bomba Certa - Gestão de Combustível</title>
+    <title>Bomba Certa - Pro</title>
     <link href="https://googleapis.com" rel="stylesheet">
-    
     <style>
-        :root {
-            --primary: #2563eb;
-            --success: #10b981;
-            --danger: #ef4444;
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --text: #1e293b;
-            --border: #e2e8f0;
-        }
-
+        :root { --primary: #2563eb; --success: #10b981; --danger: #ef4444; --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --border: #e2e8f0; }
         * { box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            background-color: var(--bg); 
-            color: var(--text); 
-            margin: 0; 
-            padding: 15px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-        }
-
+        body { background-color: var(--bg); color: var(--text); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
         .container { width: 100%; max-width: 500px; }
-
-        header { text-align: center; margin: 10px 0 25px 0; }
-        header h1 { 
-            color: var(--primary); 
-            margin: 0; 
-            font-size: 1.8rem; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 10px; 
-        }
-        header p { color: #64748b; font-size: 0.9rem; margin-top: 5px; }
-
-        .card { 
-            background: var(--card); 
-            padding: 20px; 
-            border-radius: 16px; 
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); 
-            margin-bottom: 20px;
-            border: 1px solid var(--border);
-        }
-
-        .form-title { 
-            margin: 0 0 15px 0; 
-            font-size: 1.1rem; 
-            font-weight: 700; 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-        }
-
-        .input-group { margin-bottom: 15px; }
-        label { display: block; font-size: 0.75rem; font-weight: 700; margin-bottom: 6px; color: #475569; text-transform: uppercase; }
-        
-        input { 
-            width: 100%; 
-            padding: 14px; 
-            border: 1.5px solid var(--border); 
-            border-radius: 12px; 
-            font-size: 1rem; 
-            transition: border-color 0.2s;
-            background: #fdfdfd;
-        }
-
-        input:focus { outline: none; border-color: var(--primary); background: #fff; }
-
-        .btn-save { 
-            background: var(--primary); 
-            color: white; 
-            border: none; 
-            padding: 16px; 
-            width: 100%; 
-            border-radius: 12px; 
-            font-weight: 700; 
-            font-size: 1rem;
-            cursor: pointer; 
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-            transition: transform 0.1s;
-        }
-
-        .btn-save:active { transform: scale(0.98); }
-
-        /* Lista de Registros */
-        .registro-item {
-            background: var(--card); 
-            padding: 16px; 
-            border-radius: 14px;
-            margin-bottom: 12px; 
-            display: flex; 
-            justify-content: space-between;
-            align-items: center; 
-            border: 1px solid var(--border);
-        }
-
-        .info-data { font-size: 0.75rem; color: #94a3b8; font-weight: 600; }
-        .info-principal { font-weight: 700; font-size: 1.1rem; margin: 2px 0; color: var(--text); }
-        .info-detalhes { font-size: 0.85rem; color: #64748b; }
-        
-        .badge-consumo {
-            background: #dcfce7; 
-            color: #166534; 
-            padding: 3px 8px;
-            border-radius: 6px; 
-            font-size: 0.75rem; 
-            font-weight: 700; 
-            margin-left: 6px;
-        }
-
-        /* Botão de Exclusão (SVG Nativo) */
-        .btn-delete {
-            color: #94a3b8; 
-            background: #f1f5f9; 
-            border: none;
-            width: 44px; 
-            height: 44px; 
-            border-radius: 12px; 
-            cursor: pointer;
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            flex-shrink: 0;
-            transition: all 0.2s;
-        }
-
-        .btn-delete:hover, .btn-delete:active { 
-            color: white; 
-            background: var(--danger); 
-        }
-
+        header { text-align: center; margin: 10px 0 20px 0; }
+        header h1 { color: var(--primary); margin: 0; font-size: 1.8rem; }
+        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; width: 100%; }
+        .dash-card { background: var(--primary); color: white; padding: 12px; border-radius: 16px; text-align: center; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+        .dash-card.full { grid-column: span 2; background: #1e40af; }
+        .dash-card span { display: block; font-size: 0.65rem; text-transform: uppercase; opacity: 0.9; font-weight: 700; margin-bottom: 4px; }
+        .dash-card strong { font-size: 1.1rem; }
+        .card { background: var(--card); padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid var(--border); }
+        .input-group { margin-bottom: 12px; }
+        label { display: block; font-size: 0.75rem; font-weight: 700; margin-bottom: 6px; color: #475569; }
+        input { width: 100%; padding: 12px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 1rem; }
+        .btn-save { background: var(--primary); color: white; border: none; padding: 16px; width: 100%; border-radius: 12px; font-weight: 700; cursor: pointer; }
+        .registro-item { background: var(--card); padding: 15px; border-radius: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); }
+        .badge-consumo { background: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; }
+        .btn-delete { color: #94a3b8; background: #f1f5f9; border: none; width: 40px; height: 40px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .btn-delete svg { width: 18px; height: 18px; fill: currentColor; }
-
-        .section-title { padding-left: 5px; font-size: 1rem; color: #475569; margin-bottom: 12px; font-weight: 700; }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <header>
-            <h1>⛽ Bomba Certa</h1>
-            <p>Controle de Km e Consumo</p>
-        </header>
-        
-        <!-- Formulário de Entrada -->
+        <header><h1>⛽ Bomba Certa</h1></header>
+        <div class="dashboard">
+            <div class="dash-card"><span>Gasto (Mês)</span><strong id="totalMes">R$ 0,00</strong></div>
+            <div class="dash-card"><span>Litros (Mês)</span><strong id="litrosMes">0.00 L</strong></div>
+            <div class="dash-card full"><span>Km Percorrida (Mês)</span><strong id="kmMes">0 Km</strong></div>
+        </div>
         <div class="card">
-            <div class="form-title">Novo Abastecimento</div>
-            <div class="input-group">
-                <label>Quilometragem Atual (Km)</label>
-                <input type="number" id="km" placeholder="Ex: 45200" inputmode="numeric">
-            </div>
-            <div style="display: flex; gap: 12px;">
-                <div class="input-group" style="flex: 1;">
-                    <label>Litros</label>
-                    <input type="number" id="litros" step="0.01" placeholder="0.00" inputmode="decimal">
-                </div>
-                <div class="input-group" style="flex: 1;">
-                    <label>Valor Total (R$)</label>
-                    <input type="number" id="valor" step="0.01" placeholder="0.00" inputmode="decimal">
-                </div>
-            </div>
+            <div class="input-group"><label>KM ATUAL</label><input type="number" id="km" placeholder="00000" inputmode="numeric"></div>
+            <div style="display: flex; gap: 10px;"><div class="input-group" style="flex: 1;"><label>LITROS</label><input type="number" id="litros" step="0.01" placeholder="0.00" inputmode="decimal"></div><div class="input-group" style="flex: 1;"><label>VALOR DO LITRO (R$)</label><input type="number" id="valorLitro" step="0.001" placeholder="0.00" inputmode="decimal"></div></div>
+            <div class="input-group"><label>POSTO (OPCIONAL)</label><input type="text" id="posto" placeholder="Ex: Posto Ipiranga"></div>
             <button class="btn-save" onclick="salvarAbastecimento()">SALVAR REGISTRO</button>
         </div>
-
-        <div class="section-title">Histórico de Atividades</div>
         <div id="listaRegistros"></div>
     </div>
-
     <script>
-        // Inicialização dos dados
-        let abastecimentos = JSON.parse(localStorage.getItem('bomba_certa_v1')) || [];
+        let abastecimentos = JSON.parse(localStorage.getItem('bomba_certa_v3')) || [];
+        let geoAtual = "";
+        if (navigator.geolocation) { navigator.geolocation.getCurrentPosition(pos => { geoAtual = `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`; }); }
 
         function salvarAbastecimento() {
-            const kmInput = document.getElementById('km');
-            const litrosInput = document.getElementById('litros');
-            const valorInput = document.getElementById('valor');
+            const km = parseFloat(document.getElementById('km').value);
+            const litros = parseFloat(document.getElementById('litros').value);
+            const valorL = parseFloat(document.getElementById('valorLitro').value) || 0;
+            const posto = document.getElementById('posto').value || "Não informado";
+            if (!km || !litros || !valorL) return alert("Preencha Km, Litros e Valor do Litro!");
+            
+            const valorTotal = litros * valorL;
+            const agora = new Date();
+            const mesAno = `${agora.getMonth() + 1}/${agora.getFullYear()}`;
 
-            const km = parseFloat(kmInput.value);
-            const litros = parseFloat(litrosInput.value);
-            const valor = parseFloat(valorInput.value) || 0;
-            const data = new Date().toLocaleDateString('pt-BR');
-
-            if (!km || !litros) {
-                alert("Por favor, preencha KM e Litros para calcular.");
-                return;
-            }
-
-            // Lógica de Consumo (Km Atual - Km do Registro Anterior) / Litros Atuais
             let consumo = 0;
             if (abastecimentos.length > 0) {
-                const ultimo = abastecimentos[0]; // Primeiro da lista é o mais recente
-                const distancia = km - ultimo.km;
-                if (distancia > 0) {
-                    consumo = (distancia / litros).toFixed(2);
-                }
+                const dist = km - abastecimentos[0].km;
+                if (dist > 0) consumo = (dist / litros).toFixed(2);
             }
 
-            const novoRegistro = {
-                id: "id_" + Date.now(),
-                data, km, litros, valor, consumo
-            };
-
-            abastecimentos.unshift(novoRegistro);
-            atualizarStorage();
-            
-            // Limpar campos e feedback
-            kmInput.value = '';
-            litrosInput.value = '';
-            valorInput.value = '';
+            abastecimentos.unshift({ id: Date.now(), data: agora.toLocaleDateString('pt-BR'), mesAno, km, litros, valorTotal, valorLitro: valorL, consumo, posto, geo: geoAtual });
+            localStorage.setItem('bomba_certa_v3', JSON.stringify(abastecimentos));
+            document.querySelectorAll('input').forEach(i => i.value = '');
             renderizar();
         }
 
-        function excluirRegistro(idParaRemover) {
-            if (confirm("Deseja excluir este registro permanentemente?")) {
-                abastecimentos = abastecimentos.filter(item => item.id !== idParaRemover);
-                atualizarStorage();
+        function excluirRegistro(id) {
+            if (confirm("Excluir registro?")) {
+                abastecimentos = abastecimentos.filter(i => i.id !== id);
+                localStorage.setItem('bomba_certa_v3', JSON.stringify(abastecimentos));
                 renderizar();
             }
         }
 
-        function atualizarStorage() {
-            localStorage.setItem('bomba_certa_v1', JSON.stringify(abastecimentos));
-        }
-
         function renderizar() {
             const container = document.getElementById('listaRegistros');
+            const mesAtual = `${new Date().getMonth() + 1}/${new Date().getFullYear()}`;
+            let tMes = 0, lMes = 0, kmsNoMes = [];
             container.innerHTML = '';
 
-            if (abastecimentos.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align:center; color:#94a3b8; padding:40px; background:white; border-radius:16px; border: 1px dashed #cbd5e1;">
-                        <p>Nenhum registro encontrado.<br>Comece a abastecer!</p>
-                    </div>`;
-                return;
-            }
-
             abastecimentos.forEach(item => {
-                const htmlItem = `
+                if(item.mesAno === mesAtual) {
+                    tMes += item.valorTotal;
+                    lMes += item.litros;
+                    kmsNoMes.push(item.km);
+                }
+                container.innerHTML += `
                     <div class="registro-item">
-                        <div style="flex-grow: 1;">
-                            <div class="info-data">${item.data}</div>
-                            <div class="info-principal">
-                                ${item.km.toLocaleString()} Km
-                                ${item.consumo > 0 ? `<span class="badge-consumo">${item.consumo} Km/L</span>` : ''}
-                            </div>
-                            <div class="info-detalhes">
-                                <strong>${item.litros}L</strong> • R$ ${parseFloat(item.valor).toFixed(2)}
-                            </div>
+                        <div style="flex:1">
+                            <span style="font-size:0.7rem;color:#64748b">${item.data}</span>
+                            <div style="font-weight:700;font-size:1rem">${item.km.toLocaleString()} Km ${item.consumo > 0 ? `<span class="badge-consumo">${item.consumo} Km/L</span>` : ''}</div>
+                            <div style="font-size:0.8rem;color:#475569"><strong>${item.posto}</strong> • ${item.litros}L (R$ ${item.valorLitro.toFixed(3)}/L)</div>
+                            <div style="font-size:0.85rem;font-weight:700;color:var(--primary)">Total: R$ ${item.valorTotal.toFixed(2)}</div>
                         </div>
-                        <button class="btn-delete" onclick="excluirRegistro('${item.id}')">
-                            <svg viewBox="0 0 448 512"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg>
-                        </button>
-                    </div>
-                `;
-                container.innerHTML += htmlItem;
+                        <button class="btn-delete" onclick="excluirRegistro(${item.id})"><svg viewBox="0 0 448 512"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg></button>
+                    </div>`;
             });
-        }
 
-        // Iniciar App
+            const kmTotal = kmsNoMes.length > 1 ? (Math.max(...kmsNoMes) - Math.min(...kmsNoMes)) : 0;
+            document.getElementById('totalMes').innerText = `R$ ${tMes.toFixed(2)}`;
+            document.getElementById('litrosMes').innerText = `${lMes.toFixed(2)} L`;
+            document.getElementById('kmMes').innerText = `${kmTotal.toLocaleString()} Km`;
+        }
         renderizar();
     </script>
 </body>

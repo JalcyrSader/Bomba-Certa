@@ -3,90 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bomba Certa</title>
+    <title>Bomba Certa - Gestão de Combustível</title>
+    <link href="https://googleapis.com" rel="stylesheet">
+    
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #f4f4f9; }
-        .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { background: #28a745; color: white; border: none; padding: 10px; width: 100%; border-radius: 4px; cursor: pointer; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border-bottom: 1px solid #ddd; padding: 8px; text-align: left; }
+        :root {
+            --primary: #2563eb;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --border: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background-color: var(--bg); 
+            color: var(--text); 
+            margin: 0; 
+            padding: 15px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
+
+        .container { width: 100%; max-width: 500px; }
+
+        header { text-align: center; margin: 10px 0 25px 0; }
+        header h1 { 
+            color: var(--primary); 
+            margin: 0; 
+            font-size: 1.8rem; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px; 
+        }
+        header p { color: #64748b; font-size: 0.9rem; margin-top: 5px; }
+
+        .card { 
+            background: var(--card); 
+            padding: 20px; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); 
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .form-title { 
+            margin: 0 0 15px 0; 
+            font-size: 1.1rem; 
+            font-weight: 700; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 0.75rem; font-weight: 700; margin-bottom: 6px; color: #475569; text-transform: uppercase; }
+        
+        input { 
+            width: 100%; 
+            padding: 14px; 
+            border: 1.5px solid var(--border); 
+            border-radius: 12px; 
+            font-size: 1rem; 
+            transition: border-color 0.2s;
+            background: #fdfdfd;
+        }
+
+        input:focus { outline: none; border-color: var(--primary); background: #fff; }
+
+        .btn-save { 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            padding: 16px; 
+            width: 100%; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            font-size: 1rem;
+            cursor: pointer; 
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+            transition: transform 0.1s;
+        }
+
+        .btn-save:active { transform: scale(0.98); }
+
+        /* Lista de Registros */
+        .registro-item {
+            background: var(--card); 
+            padding: 16px; 
+            border-radius: 14px;
+            margin-bottom: 12px; 
+            display: flex; 
+            justify-content: space-between;
+            align-items: center; 
+            border: 1px solid var(--border);
+        }
+
+        .info-data { font-size: 0.75rem; color: #94a3b8; font-weight: 600; }
+        .info-principal { font-weight: 700; font-size: 1.1rem; margin: 2px 0; color: var(--text); }
+        .info-detalhes { font-size: 0.85rem; color: #64748b; }
+        
+        .badge-consumo {
+            background: #dcfce7; 
+            color: #166534; 
+            padding: 3px 8px;
+            border-radius: 6px; 
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            margin-left: 6px;
+        }
+
+        /* Botão de Exclusão (SVG Nativo) */
+        .btn-delete {
+            color: #94a3b8; 
+            background: #f1f5f9; 
+            border: none;
+            width: 44px; 
+            height: 44px; 
+            border-radius: 12px; 
+            cursor: pointer;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .btn-delete:hover, .btn-delete:active { 
+            color: white; 
+            background: var(--danger); 
+        }
+
+        .btn-delete svg { width: 18px; height: 18px; fill: currentColor; }
+
+        .section-title { padding-left: 5px; font-size: 1rem; color: #475569; margin-bottom: 12px; font-weight: 700; }
     </style>
 </head>
 <body>
 
-    <h2>⛽ Bomba Certa</h2>
-    
-    <div class="card">
-        <h3>Novo Abastecimento</h3>
-        <input type="number" id="km" placeholder="Km Atual">
-        <input type="number" id="litros" placeholder="Quantidade de Litros">
-        <input type="number" id="valor" placeholder="Valor Total (R$)">
-        <button onclick="salvarAbastecimento()">Registrar</button>
-    </div>
+    <div class="container">
+        <header>
+            <h1>⛽ Bomba Certa</h1>
+            <p>Controle de Km e Consumo</p>
+        </header>
+        
+        <!-- Formulário de Entrada -->
+        <div class="card">
+            <div class="form-title">Novo Abastecimento</div>
+            <div class="input-group">
+                <label>Quilometragem Atual (Km)</label>
+                <input type="number" id="km" placeholder="Ex: 45200" inputmode="numeric">
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <div class="input-group" style="flex: 1;">
+                    <label>Litros</label>
+                    <input type="number" id="litros" step="0.01" placeholder="0.00" inputmode="decimal">
+                </div>
+                <div class="input-group" style="flex: 1;">
+                    <label>Valor Total (R$)</label>
+                    <input type="number" id="valor" step="0.01" placeholder="0.00" inputmode="decimal">
+                </div>
+            </div>
+            <button class="btn-save" onclick="salvarAbastecimento()">SALVAR REGISTRO</button>
+        </div>
 
-    <div class="card">
-        <h3>Histórico e Relatórios</h3>
-        <div id="resumo"></div>
-        <table id="tabelaAbastecimentos">
-            <thead>
-                <tr>
-                    <th>Data</th>
-                    <th>Km</th>
-                    <th>Litros</th>
-                    <th>Consumo (Km/L)</th>
-                </tr>
-            </thead>
-            <tbody id="corpoTabela"></tbody>
-        </table>
+        <div class="section-title">Histórico de Atividades</div>
+        <div id="listaRegistros"></div>
     </div>
 
     <script>
-        let abastecimentos = JSON.parse(localStorage.getItem('bomba_certa_dados')) || [];
+        // Inicialização dos dados
+        let abastecimentos = JSON.parse(localStorage.getItem('bomba_certa_v1')) || [];
 
         function salvarAbastecimento() {
-            const km = parseFloat(document.getElementById('km').value);
-            const litros = parseFloat(document.getElementById('litros').value);
-            const valor = parseFloat(document.getElementById('valor').value);
+            const kmInput = document.getElementById('km');
+            const litrosInput = document.getElementById('litros');
+            const valorInput = document.getElementById('valor');
+
+            const km = parseFloat(kmInput.value);
+            const litros = parseFloat(litrosInput.value);
+            const valor = parseFloat(valorInput.value) || 0;
             const data = new Date().toLocaleDateString('pt-BR');
 
-            // Cálculo de consumo simples (diferença do último KM)
-            let consumo = 0;
-            if (abastecimentos.length > 0) {
-                const ultimoKm = abastecimentos[0].km;
-                consumo = (km - ultimoKm) / litros;
+            if (!km || !litros) {
+                alert("Por favor, preencha KM e Litros para calcular.");
+                return;
             }
 
-            const registro = { data, km, litros, valor, consumo: consumo.toFixed(2) };
-            abastecimentos.unshift(registro); // Adiciona no topo
-            localStorage.setItem('bomba_certa_dados', JSON.stringify(abastecimentos));
+            // Lógica de Consumo (Km Atual - Km do Registro Anterior) / Litros Atuais
+            let consumo = 0;
+            if (abastecimentos.length > 0) {
+                const ultimo = abastecimentos[0]; // Primeiro da lista é o mais recente
+                const distancia = km - ultimo.km;
+                if (distancia > 0) {
+                    consumo = (distancia / litros).toFixed(2);
+                }
+            }
+
+            const novoRegistro = {
+                id: "id_" + Date.now(),
+                data, km, litros, valor, consumo
+            };
+
+            abastecimentos.unshift(novoRegistro);
+            atualizarStorage();
             
+            // Limpar campos e feedback
+            kmInput.value = '';
+            litrosInput.value = '';
+            valorInput.value = '';
             renderizar();
-            limparCampos();
+        }
+
+        function excluirRegistro(idParaRemover) {
+            if (confirm("Deseja excluir este registro permanentemente?")) {
+                abastecimentos = abastecimentos.filter(item => item.id !== idParaRemover);
+                atualizarStorage();
+                renderizar();
+            }
+        }
+
+        function atualizarStorage() {
+            localStorage.setItem('bomba_certa_v1', JSON.stringify(abastecimentos));
         }
 
         function renderizar() {
-            const corpo = document.getElementById('corpoTabela');
-            corpo.innerHTML = '';
+            const container = document.getElementById('listaRegistros');
+            container.innerHTML = '';
+
+            if (abastecimentos.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; color:#94a3b8; padding:40px; background:white; border-radius:16px; border: 1px dashed #cbd5e1;">
+                        <p>Nenhum registro encontrado.<br>Comece a abastecer!</p>
+                    </div>`;
+                return;
+            }
+
             abastecimentos.forEach(item => {
-                corpo.innerHTML += `
-                    <tr>
-                        <td>${item.data}</td>
-                        <td>${item.km}</td>
-                        <td>${item.litros}L</td>
-                        <td>${item.consumo > 0 ? item.consumo : '-'}</td>
-                    </tr>
+                const htmlItem = `
+                    <div class="registro-item">
+                        <div style="flex-grow: 1;">
+                            <div class="info-data">${item.data}</div>
+                            <div class="info-principal">
+                                ${item.km.toLocaleString()} Km
+                                ${item.consumo > 0 ? `<span class="badge-consumo">${item.consumo} Km/L</span>` : ''}
+                            </div>
+                            <div class="info-detalhes">
+                                <strong>${item.litros}L</strong> • R$ ${parseFloat(item.valor).toFixed(2)}
+                            </div>
+                        </div>
+                        <button class="btn-delete" onclick="excluirRegistro('${item.id}')">
+                            <svg viewBox="0 0 448 512"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg>
+                        </button>
+                    </div>
                 `;
+                container.innerHTML += htmlItem;
             });
         }
 
-        function limparCampos() {
-            document.getElementById('km').value = '';
-            document.getElementById('litros').value = '';
-            document.getElementById('valor').value = '';
-        }
-
-        renderizar(); // Inicia o app com dados salvos
+        // Iniciar App
+        renderizar();
     </script>
 </body>
 </html>

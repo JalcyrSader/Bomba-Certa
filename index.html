@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bomba Certa</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f9; }
+        .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background: #28a745; color: white; border: none; padding: 10px; width: 100%; border-radius: 4px; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border-bottom: 1px solid #ddd; padding: 8px; text-align: left; }
+    </style>
+</head>
+<body>
+
+    <h2>⛽ Bomba Certa</h2>
+    
+    <div class="card">
+        <h3>Novo Abastecimento</h3>
+        <input type="number" id="km" placeholder="Km Atual">
+        <input type="number" id="litros" placeholder="Quantidade de Litros">
+        <input type="number" id="valor" placeholder="Valor Total (R$)">
+        <button onclick="salvarAbastecimento()">Registrar</button>
+    </div>
+
+    <div class="card">
+        <h3>Histórico e Relatórios</h3>
+        <div id="resumo"></div>
+        <table id="tabelaAbastecimentos">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Km</th>
+                    <th>Litros</th>
+                    <th>Consumo (Km/L)</th>
+                </tr>
+            </thead>
+            <tbody id="corpoTabela"></tbody>
+        </table>
+    </div>
+
+    <script>
+        let abastecimentos = JSON.parse(localStorage.getItem('bomba_certa_dados')) || [];
+
+        function salvarAbastecimento() {
+            const km = parseFloat(document.getElementById('km').value);
+            const litros = parseFloat(document.getElementById('litros').value);
+            const valor = parseFloat(document.getElementById('valor').value);
+            const data = new Date().toLocaleDateString('pt-BR');
+
+            // Cálculo de consumo simples (diferença do último KM)
+            let consumo = 0;
+            if (abastecimentos.length > 0) {
+                const ultimoKm = abastecimentos[0].km;
+                consumo = (km - ultimoKm) / litros;
+            }
+
+            const registro = { data, km, litros, valor, consumo: consumo.toFixed(2) };
+            abastecimentos.unshift(registro); // Adiciona no topo
+            localStorage.setItem('bomba_certa_dados', JSON.stringify(abastecimentos));
+            
+            renderizar();
+            limparCampos();
+        }
+
+        function renderizar() {
+            const corpo = document.getElementById('corpoTabela');
+            corpo.innerHTML = '';
+            abastecimentos.forEach(item => {
+                corpo.innerHTML += `
+                    <tr>
+                        <td>${item.data}</td>
+                        <td>${item.km}</td>
+                        <td>${item.litros}L</td>
+                        <td>${item.consumo > 0 ? item.consumo : '-'}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function limparCampos() {
+            document.getElementById('km').value = '';
+            document.getElementById('litros').value = '';
+            document.getElementById('valor').value = '';
+        }
+
+        renderizar(); // Inicia o app com dados salvos
+    </script>
+</body>
+</html>
